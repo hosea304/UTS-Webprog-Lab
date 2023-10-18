@@ -9,6 +9,18 @@ if (isset($_POST['submit'])) {
   $tugas = $_POST['listBaru'];
   $priority = $_POST['priority'];
 
+  switch ($priority) {
+    case 'High':
+      $priority = 3;
+      break;
+    case 'Medium':
+      $priority = 2;
+      break;
+    case 'Low':
+      $priority = 1;
+      break;
+  }
+
   $tugas = mysqli_escape_string($koneksi, $tugas);
   $priority = mysqli_escape_string($koneksi, $priority);
 
@@ -17,14 +29,19 @@ if (isset($_POST['submit'])) {
   mysqli_query($koneksi, $sql);
 }
 
-if (isset($_POST['check'])) {
+if (isset($_POST['task_done'])) {
   $id = $_POST['id'];
-  $isChecked = $_POST['check'] == 1 ? 1 : 0;
-  $sql = "UPDATE tbl_tugas SET status='" . ($isChecked ? 'Done' : 'On Progress') . "' WHERE id = $id";
+  $isChecked = $_POST['task_done'] ? 1 : 0;
+
+  // Update status to 'Done' if checked, 'On Progress' if unchecked
+  $status = $isChecked ? 'Done' : 'On Progress';
+
+  $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
   mysqli_query($koneksi, $sql);
 }
 
-$sql = "SELECT * FROM tbl_tugas ORDER BY priority DESC, status ASC";
+// Modify SQL query to order by status and then priority
+$sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 
@@ -71,7 +88,18 @@ $hasil = mysqli_query($koneksi, $sql);
           while ($baris = mysqli_fetch_assoc($hasil)) {
             echo "<tr>";
             echo "<td scope='row'>";
-            echo $baris['priority'];
+            // Convert priority back to string for display
+            switch ($baris['priority']) {
+              case 3:
+                echo 'High';
+                break;
+              case 2:
+                echo 'Medium';
+                break;
+              case 1:
+                echo 'Low';
+                break;
+            }
             echo "</td>";
 
             echo "<td scope='row'>";
@@ -89,11 +117,10 @@ $hasil = mysqli_query($koneksi, $sql);
             echo "</td>";
 
             echo "<td>";
-            echo "<form action='todo.php' method='POST'>";
-            echo "<input type='checkbox' name='check' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ">";
+            echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
             echo "<input type='hidden' name='id' value='" . $baris['id'] . "'>";
-            echo "</form>";
             echo "</td>";
+
 
             echo "</tr>";
           }
@@ -105,9 +132,22 @@ $hasil = mysqli_query($koneksi, $sql);
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('input[type="checkbox"]').on('change', function () {
+        var id = $(this).next().val();
+        var isChecked = $(this).is(':checked');
+        var status = isChecked ? 'Done' : 'On Progress';
+
+        $.post('update_status.php', { id: id, status: status }, function (data) {
+          location.reload();
+        });
+      });
+    });
+  </script>
+
 </body>
 
 </html>
