@@ -12,30 +12,19 @@ if (isset($_POST['submit'])) {
   $tugas = mysqli_escape_string($koneksi, $tugas);
   $priority = mysqli_escape_string($koneksi, $priority);
 
-  $sql = "INSERT INTO tbl_tugas (priority,tugas,status)
-          VALUES ('{$priority}','{$tugas}','No Status')";
+  $sql = "INSERT INTO tbl_tugas (priority, tugas, status)
+          VALUES ('{$priority}', '{$tugas}', 'No Status')";
   mysqli_query($koneksi, $sql);
 }
 
-if (isset($_GET['status'])) {
-  if ($_GET['status'] == 1) {
-    $sql = "UPDATE tbl_tugas SET status='On Progress'
-            WHERE id = $_GET[id]";
-    mysqli_query($koneksi, $sql);
-  } else if ($_GET['status'] == 2) {
-    $sql = "UPDATE tbl_tugas SET status='Cancelled'
-            WHERE id = $_GET[id]";
-  } else if ($_GET['status'] == 3) {
-    $sql = "UPDATE tbl_tugas SET status='Done'
-            WHERE id = $_GET[id]";
-  } else if ($_GET['status'] == 4) {
-    $sql = "DELETE FROM tbl_tugas
-            WHERE id = $_GET[id]";
-  }
+if (isset($_POST['check'])) {
+  $id = $_POST['id'];
+  $isChecked = $_POST['check'] == 1 ? 1 : 0;
+  $sql = "UPDATE tbl_tugas SET status='" . ($isChecked ? 'Done' : 'On Progress') . "' WHERE id = $id";
   mysqli_query($koneksi, $sql);
 }
 
-$sql = "SELECT * FROM tbl_tugas";
+$sql = "SELECT * FROM tbl_tugas ORDER BY priority DESC, status ASC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 
@@ -53,28 +42,28 @@ $hasil = mysqli_query($koneksi, $sql);
 </head>
 
 <body>
-
   <div class="container-fluid">
-    <div class=' d-flex justify-content-center align-items-center w-100 h-100 flex-column '>
-      <h1 class=" mb-3 ">To-do list</h1>
+    <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
+      <h1 class="mb-3">To-do list</h1>
       <form action="todo.php" method='POST' class="mb-3">
         <label>New To Do</label>
-        <input type="text" name="listBaru" id="listBaru">
+        <input type="text" name="listBaru" id="listBaru" required>
         <select name="priority" id="option">
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
-        <input type="submit" value="Add" class=" Add rounded-3 " name="submit">
+        <input type="submit" value="Add" class="Add rounded-3" name="submit">
       </form>
 
       <table class="table table-sm">
-        <thead class=" table-primary">
+        <thead class="table-primary">
           <tr>
             <th scope="col">Priority</th>
             <th scope="col">Task</th>
-            <th scope="col">Done</th>
             <th scope="col">Progress</th>
+            <th scope="col">Update</th>
+            <th scope="col">Done</th>
           </tr>
         </thead>
         <tbody>
@@ -94,10 +83,16 @@ $hasil = mysqli_query($koneksi, $sql);
             echo "</td>";
 
             echo "<td>";
-            echo "<a href='todo.php?status=1&id=" . $baris['id'] . "'>Start</a> |";
-            echo "<a href='todo.php?status=2&id=" . $baris['id'] . "'>Cancel</a> |";
-            echo "<a href='todo.php?status=3&id=" . $baris['id'] . "'>Done</a> |";
-            echo "<a href='todo.php?status=4&id=" . $baris['id'] . "'>Delete</a> |";
+            echo "<a href='start.php?id=" . $baris['id'] . "'>Start</a> |";
+            echo "<a href='cancel.php?id=" . $baris['id'] . "'>Cancel</a> |";
+            echo "<a href='delete.php?id=" . $baris['id'] . "'>Delete</a> |";
+            echo "</td>";
+
+            echo "<td>";
+            echo "<form action='todo.php' method='POST'>";
+            echo "<input type='checkbox' name='check' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ">";
+            echo "<input type='hidden' name='id' value='" . $baris['id'] . "'>";
+            echo "</form>";
             echo "</td>";
 
             echo "</tr>";
