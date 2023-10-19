@@ -37,6 +37,20 @@ if (isset($_POST['task_done'])) {
   mysqli_query($koneksi, $sql);
 }
 
+if (isset($_POST['delete'])) {
+  $idToDelete = $_POST['id'];
+
+  $sqlDelete = "DELETE FROM tbl_tugas WHERE id = ?";
+  $stmtDelete = $koneksi->prepare($sqlDelete);
+  $stmtDelete->bind_param("i", $idToDelete);
+
+  if ($stmtDelete->execute()) {
+    header('Location: todo.php');
+  } else {
+    echo "Error deleting record: " . $stmtDelete->error;
+  }
+}
+
 $sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
@@ -110,7 +124,12 @@ $hasil = mysqli_query($koneksi, $sql);
               echo "<td>";
               echo "<a href='update/start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
               echo "<a href='update/edit.php?id=" . $baris['id'] . "&tugas=" . $baris['tugas'] . "&status=" . $baris['status'] . "&priority=" . $baris['priority'] . "' class='btn btn-warning'>Edit</a> ";
-              echo "<a href='update/delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
+
+              echo "<form method='post' style='display:inline;'>
+                  <input type='hidden' name='id' value='" . $baris['id'] . "'>
+                  <button type='submit' name='delete' class='btn btn-danger delete'>Delete</button>
+              </form>";
+
               echo "</td>";
 
               echo "<td>";
