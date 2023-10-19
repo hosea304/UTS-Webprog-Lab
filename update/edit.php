@@ -6,8 +6,10 @@ if (mysqli_connect_errno()) {
 }
 
 if (isset($_POST['submit'])) {
-  $tugas = $_POST['listBaru'];
+  $id = $_POST['id'];
+  $tugas = $_POST['tugas'];
   $priority = $_POST['priority'];
+  $status = $_POST['status'];
 
   switch ($priority) {
     case 'High':
@@ -21,10 +23,14 @@ if (isset($_POST['submit'])) {
       break;
   }
 
-  $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (priority, tugas, status) VALUES (?, ?, 'No Status')");
-  $stmt->bind_param("is", $priority, $tugas);
+  $tugas = mysqli_escape_string($koneksi, $tugas);
+  $priority = mysqli_escape_string($koneksi, $priority);
+  $status = mysqli_escape_string($koneksi, $status);
 
-  $stmt->execute();
+  $sqlEdit = "UPDATE tbl_tugas SET tugas ='" . $tugas . "', priority = '" . $priority . "', status = '" . $status . "' WHERE id = " . $id;
+  mysqli_query($koneksi, $sqlEdit);
+
+  header("Location: ../todo.php");
 }
 
 $sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
@@ -96,7 +102,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 echo "</td>";
 
                 echo "<td scope='row'>";
-                echo htmlspecialchars($baris['tugas']);
+                echo $baris['tugas'];
                 echo "</td>";
 
                 echo "<td scope='row'>";
@@ -106,6 +112,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 echo "<td>";
                 echo "<a href='start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
                 echo "<a href='delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
+                echo "</td>";
 
                 echo "<td>";
                 echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
@@ -122,8 +129,9 @@ $hasil = mysqli_query($koneksi, $sql);
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="script/script.js"></script>
-    <script>    var urlString = window.location.href;
+    <script src="../script/script.js"></script>
+    <script>
+      var urlString = window.location.href;
       var url = new URL(urlString);
       var id = url.searchParams.get("id");
       document.getElementById("id").value = id;
@@ -143,7 +151,8 @@ $hasil = mysqli_query($koneksi, $sql);
       } else {
         priority = "High";
       }
-      document.getElementById("priority").value = priority;</script>
+      document.getElementById("priority").value = priority;
+    </script>
 
     <script>
       const deleteButtons = document.querySelectorAll('.delete');
@@ -155,6 +164,7 @@ $hasil = mysqli_query($koneksi, $sql);
           }
         });
       });
+
     </script>
 </body>
 

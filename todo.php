@@ -21,10 +21,12 @@ if (isset($_POST['submit'])) {
       break;
   }
 
-  $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (priority, tugas, status) VALUES (?, ?, 'No Status')");
-  $stmt->bind_param("is", $priority, $tugas);
+  $tugas = mysqli_escape_string($koneksi, $tugas);
+  $priority = mysqli_escape_string($koneksi, $priority);
 
-  $stmt->execute();
+  $sql = "INSERT INTO tbl_tugas (priority, tugas, status)
+          VALUES ('{$priority}', '{$tugas}', 'No Status')";
+  mysqli_query($koneksi, $sql);
 }
 
 if (isset($_POST['task_done'])) {
@@ -35,20 +37,6 @@ if (isset($_POST['task_done'])) {
 
   $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
   mysqli_query($koneksi, $sql);
-}
-
-if (isset($_POST['delete'])) {
-  $idToDelete = $_POST['id'];
-
-  $sqlDelete = "DELETE FROM tbl_tugas WHERE id = ?";
-  $stmtDelete = $koneksi->prepare($sqlDelete);
-  $stmtDelete->bind_param("i", $idToDelete);
-
-  if ($stmtDelete->execute()) {
-    header('Location: todo.php');
-  } else {
-    echo "Error deleting record: " . $stmtDelete->error;
-  }
 }
 
 $sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
@@ -114,7 +102,7 @@ $hasil = mysqli_query($koneksi, $sql);
               echo "</td>";
 
               echo "<td scope='row'>";
-              echo htmlspecialchars($baris['tugas']);
+              echo $baris['tugas'];
               echo "</td>";
 
               echo "<td scope='row'>";
@@ -124,12 +112,7 @@ $hasil = mysqli_query($koneksi, $sql);
               echo "<td>";
               echo "<a href='update/start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
               echo "<a href='update/edit.php?id=" . $baris['id'] . "&tugas=" . $baris['tugas'] . "&status=" . $baris['status'] . "&priority=" . $baris['priority'] . "' class='btn btn-warning'>Edit</a> ";
-
-              echo "<form method='post' style='display:inline;'>
-                  <input type='hidden' name='id' value='" . $baris['id'] . "'>
-                  <button type='submit' name='delete' class='btn btn-danger delete'>Delete</button>
-              </form>";
-
+              echo "<a href='update/delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
               echo "</td>";
 
               echo "<td>";
@@ -160,8 +143,8 @@ $hasil = mysqli_query($koneksi, $sql);
         }
       });
     });
-  </script>
 
+  </script>
 </body>
 
 </html>
