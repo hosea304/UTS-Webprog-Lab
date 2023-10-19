@@ -6,8 +6,10 @@ if (mysqli_connect_errno()) {
 }
 
 if (isset($_POST['submit'])) {
-  $tugas = $_POST['listBaru'];
+  $id = $_POST['id'];
+  $tugas = $_POST['tugas'];
   $priority = $_POST['priority'];
+  $status = $_POST['status'];
 
   switch ($priority) {
     case 'High':
@@ -23,24 +25,14 @@ if (isset($_POST['submit'])) {
 
   $tugas = mysqli_escape_string($koneksi, $tugas);
   $priority = mysqli_escape_string($koneksi, $priority);
+  $status = mysqli_escape_string($koneksi, $status);
 
-  $sql = "INSERT INTO tbl_tugas (priority, tugas, status)
-          VALUES ('{$priority}', '{$tugas}', 'No Status')";
-  mysqli_query($koneksi, $sql);
+  $sqlEdit = "UPDATE tbl_tugas SET tugas ='". $tugas ."', priority = '" . $priority . "', status = '" . $status . "' WHERE id = " . $id;
+  mysqli_query($koneksi, $sqlEdit);
+
+  header("Location: todo.php");
 }
 
-if (isset($_POST['task_done'])) {
-  $id = $_POST['id'];
-  $isChecked = $_POST['task_done'] ? 1 : 0;
-
-  // Update status to 'Done' if checked, 'On Progress' if unchecked
-  $status = $isChecked ? 'Done' : 'On Progress';
-
-  $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
-  mysqli_query($koneksi, $sql);
-}
-
-// Modify SQL query to order by status and then priority
 $sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
@@ -62,15 +54,21 @@ $hasil = mysqli_query($koneksi, $sql);
   <div class="container-fluid">
     <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
       <h1 class="mb-3">To-do list</h1>
-      <form action="todo.php" method='POST' class="mb-3">
+      <form action="edit.php" method='POST' class="mb-3">
         <label>New To Do</label>
-        <input type="text" name="listBaru" id="listBaru" required>
-        <select name="priority" id="option">
+        <input type="hidden" name="id" id="id" required>
+        <input type="text" name="tugas" id="tugas" required>
+        <select name="priority" id="priority">
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
-        <input type="submit" value="Add" class="Add rounded-3" name="submit">
+        <select name="status" id="status">
+          <option value="No Status">No Status</option>
+          <option value="On Progress">On Progress</option>
+          <option value="Done">Done</option>
+        </select>
+        <input type="submit" value="Save" class="Add rounded-3" name="submit">
       </form>
 
       <table class="table table-sm">
@@ -132,23 +130,30 @@ $hasil = mysqli_query($koneksi, $sql);
       </table>
     </div>
   </div>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
   <script>
-    $(document).ready(function () {
-      $('input[type="checkbox"]').on('change', function () {
-        var id = $(this).next().val();
-        var isChecked = $(this).is(':checked');
-        var status = isChecked ? 'Done' : 'On Progress';
+    var urlString = window.location.href;
+    var url = new URL(urlString);
+    var id = url.searchParams.get("id");
+    document.getElementById("id").value = id;
 
-        $.post('update_status.php', { id: id, status: status }, function (data) {
-          location.reload();
-        });
-      });
-    });
-  </script>
+    var tugas = url.searchParams.get("tugas");
+    document.getElementById("tugas").value = tugas;
 
+    var status = url.searchParams.get("status");
+    document.getElementById("status").value = status;
+
+    var priority = url.searchParams.get("priority");
+
+    if(priority == 1){
+      priority = "Low";
+    }else if(priority == 2){
+      priority = "Medium";
+    }else{
+      priority = "High";
+    }
+    document.getElementById("priority").value = priority;
+</script>
 </body>
 
 </html>
