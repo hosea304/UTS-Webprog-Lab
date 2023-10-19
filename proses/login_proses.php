@@ -2,6 +2,11 @@
 session_start();
 require_once('../todo.php');
 
+// Check if $db is defined, if not, establish the database connection
+if (!isset($db)) {
+    $db = new PDO("mysql:host=localhost;dbname=todo", "root", "");
+}
+
 $username = $_POST['username'];
 $password = $_POST['pass'];
 
@@ -27,3 +32,4 @@ else {
         header('Location: ../todo.php');
     }
 }
+?>
