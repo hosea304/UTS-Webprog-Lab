@@ -12,6 +12,16 @@ $(document).ready(function () {
 
 AOS.init();
 
+const deleteButtons = document.querySelectorAll('.delete');
+deleteButtons.forEach(button => {
+  button.addEventListener('click', function (event) {
+    const confirmation = confirm('Apakah Anda yakin ingin menghapus item ini?');
+    if (!confirmation) {
+      event.preventDefault();
+    }
+  });
+});
+
 
 
 

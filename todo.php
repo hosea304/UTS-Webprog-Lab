@@ -21,12 +21,10 @@ if (isset($_POST['submit'])) {
       break;
   }
 
-  $tugas = mysqli_escape_string($koneksi, $tugas);
-  $priority = mysqli_escape_string($koneksi, $priority);
+  $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (priority, tugas, status) VALUES (?, ?, 'No Status')");
+  $stmt->bind_param("is", $priority, $tugas);
 
-  $sql = "INSERT INTO tbl_tugas (priority, tugas, status)
-          VALUES ('{$priority}', '{$tugas}', 'No Status')";
-  mysqli_query($koneksi, $sql);
+  $stmt->execute();
 }
 
 if (isset($_POST['task_done'])) {
@@ -102,7 +100,7 @@ $hasil = mysqli_query($koneksi, $sql);
               echo "</td>";
 
               echo "<td scope='row'>";
-              echo $baris['tugas'];
+              echo htmlspecialchars($baris['tugas']);
               echo "</td>";
 
               echo "<td scope='row'>";
@@ -112,7 +110,7 @@ $hasil = mysqli_query($koneksi, $sql);
               echo "<td>";
               echo "<a href='update/start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
               echo "<a href='update/edit.php?id=" . $baris['id'] . "&tugas=" . $baris['tugas'] . "&status=" . $baris['status'] . "&priority=" . $baris['priority'] . "' class='btn btn-warning'>Edit</a> ";
-              echo "<a href='update/delete.php?id=" . $baris['id'] . "' class='btn btn-danger'>Delete</a> ";
+              echo "<a href='update/delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
               echo "</td>";
 
               echo "<td>";
@@ -133,6 +131,18 @@ $hasil = mysqli_query($koneksi, $sql);
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="script/script.js"></script>
+  <script>
+    const deleteButtons = document.querySelectorAll('.delete');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        const confirmation = confirm('Apakah Anda yakin ingin menghapus item ini?');
+        if (!confirmation) {
+          event.preventDefault();
+        }
+      });
+    });
+  </script>
+
 </body>
 
 </html>

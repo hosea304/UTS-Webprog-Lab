@@ -6,10 +6,8 @@ if (mysqli_connect_errno()) {
 }
 
 if (isset($_POST['submit'])) {
-  $id = $_POST['id'];
-  $tugas = $_POST['tugas'];
+  $tugas = $_POST['listBaru'];
   $priority = $_POST['priority'];
-  $status = $_POST['status'];
 
   switch ($priority) {
     case 'High':
@@ -23,14 +21,10 @@ if (isset($_POST['submit'])) {
       break;
   }
 
-  $tugas = mysqli_escape_string($koneksi, $tugas);
-  $priority = mysqli_escape_string($koneksi, $priority);
-  $status = mysqli_escape_string($koneksi, $status);
+  $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (priority, tugas, status) VALUES (?, ?, 'No Status')");
+  $stmt->bind_param("is", $priority, $tugas);
 
-  $sqlEdit = "UPDATE tbl_tugas SET tugas ='" . $tugas . "', priority = '" . $priority . "', status = '" . $status . "' WHERE id = " . $id;
-  mysqli_query($koneksi, $sqlEdit);
-
-  header("Location: ../todo.php");
+  $stmt->execute();
 }
 
 $sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
@@ -102,7 +96,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 echo "</td>";
 
                 echo "<td scope='row'>";
-                echo $baris['tugas'];
+                echo htmlspecialchars($baris['tugas']);
                 echo "</td>";
 
                 echo "<td scope='row'>";
@@ -111,8 +105,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
                 echo "<td>";
                 echo "<a href='start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
-                echo "<a href='delete.php?id=" . $baris['id'] . "' class='btn btn-danger'>Delete</a> ";
-                echo "</td>";
+                echo "<a href='delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
 
                 echo "<td>";
                 echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
@@ -151,6 +144,18 @@ $hasil = mysqli_query($koneksi, $sql);
         priority = "High";
       }
       document.getElementById("priority").value = priority;</script>
+
+    <script>
+      const deleteButtons = document.querySelectorAll('.delete');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+          const confirmation = confirm('Apakah Anda yakin ingin menghapus item ini?');
+          if (!confirmation) {
+            event.preventDefault();
+          }
+        });
+      });
+    </script>
 </body>
 
 </html>
