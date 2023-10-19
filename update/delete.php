@@ -7,9 +7,9 @@ if (mysqli_connect_errno()) {
 
 if (isset($_GET['id'])) {
   $id = $_GET['id'];
-  $sql = "UPDATE tbl_tugas SET status='Cancelled' WHERE id = $id";
+  $sql = "DELETE FROM tbl_tugas WHERE id = $id";
   mysqli_query($koneksi, $sql);
 }
 
-header("Location: todo.php");
+header("Location: ../todo.php");
 ?>

@@ -2,7 +2,6 @@
 session_start();
 require_once('../todo.php');
 
-// Check if $db is defined, if not, establish the database connection
 if (!isset($db)) {
     $db = new PDO("mysql:host=localhost;dbname=todo", "root", "");
 }
@@ -17,16 +16,14 @@ $stmt = $db->prepare($sql);
 $stmt->execute([$username]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if(!$row) {
+if (!$row) {
     header('Location: ../login.php?not%found');
     exit();
-}
-else {
-    if(!password_verify($password, $row['password'])){
+} else {
+    if (!password_verify($password, $row['password'])) {
         header('Location: ../login.php?wrong%pass');
         exit();
-    }
-    else {
+    } else {
         $_SESSION['user_id'] = $row['id'];
         $_SESSION['username'] = $row['nama'];
         header('Location: ../todo.php');

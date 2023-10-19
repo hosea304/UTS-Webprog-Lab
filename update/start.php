@@ -11,5 +11,5 @@ if (isset($_GET['id'])) {
   mysqli_query($koneksi, $sql);
 }
 
-header("Location: todo.php");
+header("Location: ../todo.php");
 ?>

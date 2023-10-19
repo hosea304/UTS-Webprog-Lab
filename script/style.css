@@ -39,3 +39,16 @@ label {
 .Add {
   background-color: #FFF2D8;
 }
+
+.scrollable-table {
+  max-height: 400px;
+  overflow-y: auto;
+  display: block;
+  width: 100%;
+}
+
+
+.table-container {
+  display: flex;
+  justify-content: center;
+}
