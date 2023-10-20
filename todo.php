@@ -35,6 +35,10 @@ if (isset($_POST['submit'])) {
     $stmt->bind_param("iis", $user_id, $priority, $tugas);
     $stmt->execute();
     $stmt->close();
+
+    // Redirect after form submission
+    header("Location: {$_SERVER['PHP_SELF']}");
+    exit;
 }
 
 if (isset($_POST['task_done'])) {
@@ -45,6 +49,10 @@ if (isset($_POST['task_done'])) {
 
     $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
     mysqli_query($koneksi, $sql);
+
+    // Redirect after form submission
+    header("Location: {$_SERVER['PHP_SELF']}");
+    exit;
 }
 
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
