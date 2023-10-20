@@ -2,7 +2,7 @@
 session_start();
 ?>
 <nav class="navbar navbar-expand bg-white py-3 px-5">
-    <div class="container-fluid justify-content-between">
+    <div class="container justify-content-between">
         <div class="w-25 d-flex justify-content-around">
             <?php
             if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {

@@ -37,7 +37,23 @@
 </head>
 
 <body class="bg-dark text-white justify-content-center">
-    <?php include('navigation.php') ?>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item fs-4">
+                            <a class="nav-link" href="register.php">Register</a>
+                        </li>
+                        <li class="nav-item fs-4">
+                            <a class="nav-link" href="login.php">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     <h1 class="text-center my-5">Login</h1>
     <div class="w-25 mx-auto">
         <form action="proses/login_proses.php" method="post" class="d-flex flex-column fs-5">
