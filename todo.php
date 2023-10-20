@@ -1,73 +1,54 @@
 <?php
-session_start();
 $koneksi = mysqli_connect("localhost", "root", "", "todo");
 
 if (mysqli_connect_errno()) {
-    die("Koneksi database gagal: " . mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
+  die("Koneksi database gagal: " . mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
 }
 
 if (isset($_POST['submit'])) {
-    $tugas = $_POST['listBaru'];
-    $priority = $_POST['priority'];
-    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+  $tugas = $_POST['listBaru'];
+  $priority = $_POST['priority'];
+  $deskripsi = $_POST['deskripsi'];
+  $tanggal = $_POST['tanggal'];
 
-    if ($user_id === null) {
-        die("User ID not found in the session.");
-    }
+  switch ($priority) {
+    case 'High':
+      $priority = 3;
+      break;
+    case 'Medium':
+      $priority = 2;
+      break;
+    case 'Low':
+      $priority = 1;
+      break;
+  }
 
-    switch ($priority) {
-        case 'High':
-            $priority = 3;
-            break;
-        case 'Medium':
-            $priority = 2;
-            break;
-        case 'Low':
-            $priority = 1;
-            break;
-    }
+  $tugas = mysqli_escape_string($koneksi, $tugas);
+  $priority = mysqli_escape_string($koneksi, $priority);
+  $deskripsi = mysqli_escape_string($koneksi, $deskripsi);
+  $tanggal = mysqli_escape_string($koneksi, $tanggal);
 
-    $tugas = mysqli_real_escape_string($koneksi, $tugas);
-    $priority = mysqli_real_escape_string($koneksi, $priority);
-
-    // Using prepared statement to prevent SQL injection
-    $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, priority, tugas, status) VALUES (?, ?, ?, 'No Status')");
-    $stmt->bind_param("iis", $user_id, $priority, $tugas);
-    $stmt->execute();
-    $stmt->close();
-
-    // Redirect after form submission
-    header("Location: {$_SERVER['PHP_SELF']}");
-    exit;
+  $sql = "INSERT INTO tbl_tugas (priority, tugas, status, deskripsi, tanggal)
+          VALUES ('{$priority}', '{$tugas}', 'No Status', '{$deskripsi}', '{$tanggal}')";
+  mysqli_query($koneksi, $sql);
 }
 
 if (isset($_POST['task_done'])) {
-    $id = $_POST['id'];
-    $isChecked = $_POST['task_done'] ? 1 : 0;
+  $id = $_POST['id'];
+  $isChecked = $_POST['task_done'] ? 1 : 0;
 
-    $status = $isChecked ? 'Done' : 'On Progress';
+  $status = $isChecked ? 'Done' : 'On Progress';
 
-    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
-    mysqli_query($koneksi, $sql);
-
-    // Redirect after form submission
-    header("Location: {$_SERVER['PHP_SELF']}");
-    exit;
+  $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
+  mysqli_query($koneksi, $sql);
 }
 
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-
-if ($user_id === null) {
-    die("User ID not found in the session.");
-}
-
-$sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
+$sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,15 +57,24 @@ $hasil = mysqli_query($koneksi, $sql);
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Pacifico" />
   <link rel="stylesheet" href="script/style.css">
+  <style>
+    .task-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #7ec4cf;
+    }
+  </style>
 </head>
-
 <body>
   <div class="container-fluid">
     <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
       <h1 class="mb-3">To-do list</h1>
-      <form action="todo.php" method='POST' class="mb-3">
+      <form action="todo.php" method='POST' class="mb-3 task-box">
         <label>New To Do</label>
         <input type="text" name="listBaru" id="listBaru" required>
+        <input type="text" name="deskripsi" id="deskripsi" placeholder="Deskripsi">
+        <input type="date" name="tanggal" id="tanggal" placeholder="Tanggal">
         <select name="priority" id="option">
           <option value="High">High</option>
           <option value="Medium">Medium</option>
@@ -93,12 +83,14 @@ $hasil = mysqli_query($koneksi, $sql);
         <input type="submit" value="Add" class="Add rounded-3" name="submit">
       </form>
 
-      <div class="table-container">
+      <div class="table-container task-box">
         <table class="table scrollable-table">
           <thead class="table-primary">
             <tr>
               <th scope="col">Priority</th>
               <th scope="col">Task</th>
+              <th scope="col">Deskripsi</th>
+              <th scope="col">Tanggal</th>
               <th scope="col">Progress</th>
               <th scope="col">Update</th>
               <th scope="col">Done</th>
@@ -128,6 +120,14 @@ $hasil = mysqli_query($koneksi, $sql);
               echo "</td>";
 
               echo "<td scope='row'>";
+              echo $baris['deskripsi'];
+              echo "</td>";
+
+              echo "<td scope='row' class='task-date'>";
+              echo date('d/m/Y', strtotime($baris['tanggal']));
+              echo "</td>";
+
+              echo "<td scope='row'>";
               echo $baris['status'];
               echo "</td>";
 
@@ -151,8 +151,7 @@ $hasil = mysqli_query($koneksi, $sql);
       </div>
     </div>
   </div>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="script/script.js"></script>
   <script>
@@ -165,10 +164,8 @@ $hasil = mysqli_query($koneksi, $sql);
         }
       });
     });
-
   </script>
 </body>
-
 </html>
 <?php
 mysqli_close($koneksi);
