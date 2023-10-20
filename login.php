@@ -17,7 +17,7 @@
 
         .custom-button:hover {
             background-color: #4CAF50;
-            transform: scale(1.1);
+            transform: scale(1.02);
         }
 
         .custom-alert {
@@ -70,7 +70,7 @@
                 echo "<div class='alert alert-danger text-center mb-4 custom-alert'>Password salah</div>";
             }
             ?>
-            <button type="submit" class="w-25 py-2 mx-auto mt-5 btn btn-primary rounded-3 custom-button">Login</button>
+            <button type="submit" class="w-50 py-2 mx-auto mt-5 btn btn-primary rounded-3 custom-button fs-5">Login</button>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

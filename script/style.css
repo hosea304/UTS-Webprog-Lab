@@ -20,7 +20,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100vw;
-  height: 94vh;
+  height: 100vh;
 }
 
 .container-fluid {
@@ -48,4 +48,12 @@ label {
 .table-container {
   display: flex;
   justify-content: center;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
 }
