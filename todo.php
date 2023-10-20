@@ -1,45 +1,59 @@
 <?php
+session_start();
 $koneksi = mysqli_connect("localhost", "root", "", "todo");
 
 if (mysqli_connect_errno()) {
-  die("Koneksi database gagal: " . mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
+    die("Koneksi database gagal: " . mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
 }
 
 if (isset($_POST['submit'])) {
-  $tugas = $_POST['listBaru'];
-  $priority = $_POST['priority'];
+    $tugas = $_POST['listBaru'];
+    $priority = $_POST['priority'];
+    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
-  switch ($priority) {
-    case 'High':
-      $priority = 3;
-      break;
-    case 'Medium':
-      $priority = 2;
-      break;
-    case 'Low':
-      $priority = 1;
-      break;
-  }
+    if ($user_id === null) {
+        die("User ID not found in the session.");
+    }
 
-  $tugas = mysqli_escape_string($koneksi, $tugas);
-  $priority = mysqli_escape_string($koneksi, $priority);
+    switch ($priority) {
+        case 'High':
+            $priority = 3;
+            break;
+        case 'Medium':
+            $priority = 2;
+            break;
+        case 'Low':
+            $priority = 1;
+            break;
+    }
 
-  $sql = "INSERT INTO tbl_tugas (priority, tugas, status)
-          VALUES ('{$priority}', '{$tugas}', 'No Status')";
-  mysqli_query($koneksi, $sql);
+    $tugas = mysqli_real_escape_string($koneksi, $tugas);
+    $priority = mysqli_real_escape_string($koneksi, $priority);
+
+    // Using prepared statement to prevent SQL injection
+    $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, priority, tugas, status) VALUES (?, ?, ?, 'No Status')");
+    $stmt->bind_param("iis", $user_id, $priority, $tugas);
+    $stmt->execute();
+    $stmt->close();
 }
 
 if (isset($_POST['task_done'])) {
-  $id = $_POST['id'];
-  $isChecked = $_POST['task_done'] ? 1 : 0;
+    $id = $_POST['id'];
+    $isChecked = $_POST['task_done'] ? 1 : 0;
 
-  $status = $isChecked ? 'Done' : 'On Progress';
+    $status = $isChecked ? 'Done' : 'On Progress';
 
-  $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
-  mysqli_query($koneksi, $sql);
+    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
+    mysqli_query($koneksi, $sql);
 }
 
-$sql = "SELECT * FROM tbl_tugas ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+if ($user_id === null) {
+    die("User ID not found in the session.");
+}
+
+$sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 

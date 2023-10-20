@@ -1,4 +1,5 @@
 <?php
+session_start();
 $koneksi = mysqli_connect("localhost", "root", "", "todo");
 
 if (mysqli_connect_errno()) {
@@ -58,6 +59,9 @@ if (!$stmt->execute()) {
     die('Error in executing the SQL statement: ' . $stmt->error);
 }
 
+// After the user is successfully registered
+$_SESSION['user_id'] = $stmt->insert_id;
+$_SESSION['username'] = $username;
 header('Location: ../login.php');
 exit();
 ?>
