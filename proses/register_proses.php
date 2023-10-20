@@ -17,51 +17,46 @@ if (
     $username = $_POST['username'];
     $pass_tmp = $_POST['pass'];
     $confirm = $_POST['confirm'];
-    if ($confirm == $pass_tmp) {
-        $password = $pass_tmp;
-    } else {
+
+    if ($confirm !== $pass_tmp) {
         header('Location: ../register.php?error=2');
         exit();
     }
-}
 
-// Check if the username already exists
-$check_sql = "SELECT nama FROM user WHERE nama = ?";
-$check_stmt = $koneksi->prepare($check_sql);
+    $check_sql = "SELECT nama FROM user WHERE nama = ?";
+    $check_stmt = $koneksi->prepare($check_sql);
 
-if (!$check_stmt) {
-    die('Error in preparing the SQL statement: ' . $koneksi->error);
-}
+    if (!$check_stmt) {
+        die('Error in preparing the SQL statement: ' . $koneksi->error);
+    }
 
-$check_stmt->bind_param("s", $username);
-$check_stmt->execute();
-$check_stmt->store_result();
+    $check_stmt->bind_param("s", $username);
+    $check_stmt->execute();
+    $check_stmt->store_result();
 
-if ($check_stmt->num_rows > 0) {
-    // Username already exists
-    header('Location: ../register.php?error=3');
+    if ($check_stmt->num_rows > 0) {
+        header('Location: ../register.php?error=3');
+        exit();
+    }
+
+    $password = password_hash($pass_tmp, PASSWORD_BCRYPT);
+
+    $sql = "INSERT INTO user (nama, password) VALUES (?, ?)";
+    $stmt = $koneksi->prepare($sql);
+
+    if (!$stmt) {
+        die('Error in preparing the SQL statement: ' . $koneksi->error);
+    }
+
+    $stmt->bind_param("ss", $username, $password);
+
+    if (!$stmt->execute()) {
+        die('Error in executing the SQL statement: ' . $stmt->error);
+    }
+
+    $_SESSION['user_id'] = $stmt->insert_id;
+    $_SESSION['username'] = $username;
+    header('Location: ../login.php');
     exit();
 }
-
-$en_pass = password_hash($password, PASSWORD_BCRYPT);
-
-$sql = "INSERT INTO user (nama, password) VALUES (?, ?)";
-$stmt = $koneksi->prepare($sql);
-
-if (!$stmt) {
-    die('Error in preparing the SQL statement: ' . $koneksi->error);
-}
-
-$data = [$username, $en_pass];
-$stmt->bind_param("ss", $data[0], $data[1]);
-
-if (!$stmt->execute()) {
-    die('Error in executing the SQL statement: ' . $stmt->error);
-}
-
-// After the user is successfully registered
-$_SESSION['user_id'] = $stmt->insert_id;
-$_SESSION['username'] = $username;
-header('Location: ../login.php');
-exit();
 ?>
