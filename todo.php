@@ -30,6 +30,9 @@ if (isset($_POST['submit'])) {
     $tugas = mysqli_real_escape_string($koneksi, $tugas);
     $priority = mysqli_real_escape_string($koneksi, $priority);
 
+    $tugas = htmlspecialchars($tugas);
+    $priority = htmlspecialchars($priority);
+
     // Using prepared statement to prevent SQL injection
     $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, priority, tugas, status) VALUES (?, ?, ?, 'No Status')");
     $stmt->bind_param("iis", $user_id, $priority, $tugas);
@@ -58,7 +61,7 @@ if (isset($_POST['task_done'])) {
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 if ($user_id === null) {
-    die("User ID not found in the session.");
+    // die("User ID not found in the session.");
 }
 
 $sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
