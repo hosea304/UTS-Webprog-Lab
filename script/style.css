@@ -16,8 +16,6 @@ h1 {
   text-shadow: saddlebrown;
 }
 
-
-
 body {
   margin: 0;
   padding: 0;
@@ -46,7 +44,6 @@ label {
   display: block;
   width: 100%;
 }
-
 
 .table-container {
   display: flex;

@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once('../todo.php');
 
 if (!isset($db)) {
     $db = new PDO("mysql:host=localhost;dbname=todo", "root", "");
