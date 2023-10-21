@@ -31,12 +31,16 @@ if (isset($_POST['submit'])) {
       break;
   }
 
-  $tugas = mysqli_escape_string($koneksi, $tugas);
-  $priority = mysqli_escape_string($koneksi, $priority);
-  $status = mysqli_escape_string($koneksi, $status);
+  $tugas = htmlspecialchars(mysqli_escape_string($koneksi, $tugas));
+  $priority = htmlspecialchars(mysqli_escape_string($koneksi, $priority));
+  $status = htmlspecialchars(mysqli_escape_string($koneksi, $status));
 
-  $sqlEdit = "UPDATE tbl_tugas SET tugas ='" . $tugas . "', priority = '" . $priority . "', status = '" . $status . "' WHERE id = " . $id . " AND id_user_list = " . $user_id;
-  mysqli_query($koneksi, $sqlEdit);
+  $sqlEdit = "UPDATE tbl_tugas SET tugas = ?, priority = ?, status = ? WHERE id = ?  AND id_user_list = ?";
+  
+  $stmt = $koneksi->prepare($sqlEdit);
+  $stmt->bind_param("sisii", $tugas, $priority, $status, $id, $user_id);
+  $stmt->execute();
+  $stmt->close();
 
   header("Location: ../todo.php");
 }

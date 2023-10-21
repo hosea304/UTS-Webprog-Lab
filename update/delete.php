@@ -7,8 +7,11 @@ if (mysqli_connect_errno()) {
 
 if (isset($_GET['id'])) {
   $id = $_GET['id'];
-  $sql = "DELETE FROM tbl_tugas WHERE id = $id";
-  mysqli_query($koneksi, $sql);
+  $sql = "DELETE FROM tbl_tugas WHERE id = ?";
+  $stmt = $koneksi->prepare($sql);
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
+  // mysqli_query($koneksi, $sql);
 }
 
 header("Location: ../todo.php");

@@ -36,10 +36,10 @@ if (isset($_POST['submit'])) {
             break;
     }
 
-    $tugas = mysqli_real_escape_string($koneksi, $tugas);
-    $priority = mysqli_real_escape_string($koneksi, $priority);
-    $tanggal = mysqli_real_escape_string($koneksi, $tanggal); 
-    $deskripsi = mysqli_real_escape_string($koneksi, $deskripsi);
+    $tugas = htmlspecialchars(mysqli_real_escape_string($koneksi, $tugas));
+    $priority = htmlspecialchars(mysqli_real_escape_string($koneksi, $priority));
+    $tanggal = htmlspecialchars(mysqli_real_escape_string($koneksi, $tanggal)); 
+    $deskripsi = htmlspecialchars(mysqli_real_escape_string($koneksi, $deskripsi));
 
     // Using prepared statement to prevent SQL injection
     $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, id_user_list, priority, tugas, tanggal, deskripsi, status) VALUES (?, ?, ?, ?, ?, ?, 'No Status')");
@@ -58,8 +58,11 @@ if (isset($_POST['task_done'])) {
     $isChecked = $_POST['task_done'] ? 1 : 0;
 
     // Update only the tasks created by the current user
-    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id AND id_user_list = $user_id";
-    mysqli_query($koneksi, $sql);
+    $sql = "UPDATE tbl_tugas SET status = ? WHERE id = ? AND id_user_list = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("sii", $status, $id, $user_id);
+    $stmt->execute();
+    $stmt->close();
 
     // Redirect after form submission
     header("Location: {$_SERVER['PHP_SELF']}");

@@ -14,9 +14,9 @@ if (
     header('Location: ../register.php?error=1');
     exit();
 } else {
-    $username = $_POST['username'];
-    $pass_tmp = $_POST['pass'];
-    $confirm = $_POST['confirm'];
+    $username = htmlspecialchars($_POST['username']);
+    $pass_tmp = htmlspecialchars($_POST['pass']);
+    $confirm = htmlspecialchars($_POST['confirm']);
 
     if ($confirm !== $pass_tmp) {
         header('Location: ../register.php?error=2');

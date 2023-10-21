@@ -6,7 +6,7 @@ if (mysqli_connect_errno()) {
 }
 
 if (isset($_POST['check']) && isset($_POST['id'])) {
-  $id = $_POST['id'];
+  $id = htmlspecialchars($_POST['id']);
   $isChecked = $_POST['check'] == 1 ? 1 : 0;
   $sql = "UPDATE tbl_tugas SET status='" . ($isChecked ? 'Done' : 'On Progress') . "' WHERE id = $id";
   if (mysqli_query($koneksi, $sql)) {

@@ -6,11 +6,14 @@ if (mysqli_connect_errno()) {
 }
 
 if (isset($_POST['id']) && isset($_POST['status'])) {
-  $id = $_POST['id'];
-  $status = $_POST['status'];
+  $id = htmlspecialchars($_POST['id']);
+  $status = htmlspecialchars($_POST['status']);
 
-  $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
-  mysqli_query($koneksi, $sql);
+  $sql = "UPDATE tbl_tugas SET status = ? WHERE id = ?";
+  $stmt = $koneksi->prepare($sql);
+  $stmt->bind_param("si", $status, $id);
+  $stmt->execute();
+  $stmt->close();
 }
 
 mysqli_close($koneksi);

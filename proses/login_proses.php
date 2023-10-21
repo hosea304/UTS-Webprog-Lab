@@ -5,8 +5,8 @@ if (!isset($db)) {
     $db = new PDO("mysql:host=localhost;dbname=todo", "root", "");
 }
 
-$username = $_POST['username'];
-$password = $_POST['pass'];
+$username = htmlspecialchars($_POST['username']);
+$password = htmlspecialchars($_POST['pass']);
 
 $sql = "SELECT * FROM user
         WHERE nama = ?";

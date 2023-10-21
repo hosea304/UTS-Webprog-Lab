@@ -6,9 +6,11 @@ if (mysqli_connect_errno()) {
 }
 
 if (isset($_GET['id'])) {
-  $id = $_GET['id'];
-  $sql = "UPDATE tbl_tugas SET status='On Progress' WHERE id = $id";
-  mysqli_query($koneksi, $sql);
+  $id = htmlspecialchars($_GET['id']);
+  $sql = "UPDATE tbl_tugas SET status='On Progress' WHERE id = ?";
+  $stmt = $koneksi->prepare($sql);
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
 }
 
 header("Location: ../todo.php");
