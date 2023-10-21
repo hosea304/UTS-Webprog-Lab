@@ -42,7 +42,7 @@ if (isset($_POST['submit'])) {
     $deskripsi = mysqli_real_escape_string($koneksi, $deskripsi);
 
     // Using prepared statement to prevent SQL injection
-    $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, created_by_user_id, priority, tugas, tanggal, deskripsi, status) VALUES (?, ?, ?, ?, ?, ?, 'No Status')");
+    $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, id_user_list, priority, tugas, tanggal, deskripsi, status) VALUES (?, ?, ?, ?, ?, ?, 'No Status')");
 
     $stmt->bind_param("iiisss", $user_id, $user_id, $priority, $tugas, $tanggal, $deskripsi);
     $stmt->execute();
@@ -58,7 +58,7 @@ if (isset($_POST['task_done'])) {
     $isChecked = $_POST['task_done'] ? 1 : 0;
 
     // Update only the tasks created by the current user
-    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id AND created_by_user_id = $user_id";
+    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id AND id_user_list = $user_id";
     mysqli_query($koneksi, $sql);
 
     // Redirect after form submission
@@ -72,7 +72,7 @@ if ($user_id === null) {
     die("User ID not found in the session.");
 }
 
-$sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id AND created_by_user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
+$sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id AND id_user_list = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 

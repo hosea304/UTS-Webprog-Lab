@@ -35,13 +35,13 @@ if (isset($_POST['submit'])) {
   $priority = mysqli_escape_string($koneksi, $priority);
   $status = mysqli_escape_string($koneksi, $status);
 
-  $sqlEdit = "UPDATE tbl_tugas SET tugas ='" . $tugas . "', priority = '" . $priority . "', status = '" . $status . "' WHERE id = " . $id . " AND created_by_user_id = " . $user_id;
+  $sqlEdit = "UPDATE tbl_tugas SET tugas ='" . $tugas . "', priority = '" . $priority . "', status = '" . $status . "' WHERE id = " . $id . " AND id_user_list = " . $user_id;
   mysqli_query($koneksi, $sqlEdit);
 
   header("Location: ../todo.php");
 }
 
-$sql = "SELECT * FROM tbl_tugas WHERE created_by_user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
+$sql = "SELECT * FROM tbl_tugas WHERE id_user_list = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 
