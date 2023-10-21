@@ -6,6 +6,19 @@ if (mysqli_connect_errno()) {
     die("Koneksi database gagal: " . mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
 }
 
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+if ($user_id === null) {
+    die("User ID not found in the session.");
+}
+
+// Using prepared statement to prevent SQL injection
+$stmt = $koneksi->prepare("SELECT * FROM tbl_tugas WHERE user_id = ? ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$hasil = $stmt->get_result();
+$stmt->close();
+
 if (isset($_POST['submit'])) {
     $tugas = $_POST['listBaru'];
     $priority = $_POST['priority'];

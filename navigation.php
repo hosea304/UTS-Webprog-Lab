@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand bg-white py-3 px-5">
+<nav class="navbar navbar-expand bg dropdown-item-bg-success py-3 px-5">
     <div class="container justify-content-between">
         <div class="w-25 d-flex justify-content-around">
             <?php
@@ -10,7 +10,7 @@
                         <?= $_SESSION['username'] ?>
                     </a>
                     <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
-                        <a href="proses/logout_proses.php" class="dropdown-item">Logout</a>
+                        <a href="proses/logout_proses.php" class="dropdown-item dropdown-item-bg-success">Logout</a>
                     </div>
                 </div>
                 <?php
