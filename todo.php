@@ -99,7 +99,7 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
       <h1 class="mb-3">To-do list</h1>
       <form action="todo.php" method='POST' class="mb-3">
-      <div class="rounded-3 p-3" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
+      <div class="rounded-3 p-2" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
         <label>New To Do</label>
         <input type="text" name="listBaru" id="listBaru" required style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s; border-color: #ccc; box-shadow: none;"
         onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
@@ -122,74 +122,88 @@ $hasil = mysqli_query($koneksi, $sql);
       </form>
 </div>
       
-<div class="rounded-3 p-3" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
-      <div class="table-container">
-        <table class="table scrollable-table">
-          <thead class="table-primary">
-            <tr>
-              <th scope="col">Priority</th>
-              <th scope="col">Task</th>
-              <th scope="col">Progress</th>
-              <th scope="col">Tanggal</th>
-              <th scope="col">Deskripsi</th>
-              <th scope="col">Update</th>
-              <th scope="col">Done</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            $delay = 0;
-            while ($baris = mysqli_fetch_assoc($hasil)) {
-              echo "<tr class='table-row'>";
-              echo "<td scope='row'>";
-              switch ($baris['priority']) {
-                case 3:
-                  echo 'High';
-                  break;
-                case 2:
-                  echo 'Medium';
-                  break;
-                case 1:
-                  echo 'Low';
-                  break;
-              }
-              echo "</td>";
+<div class="rounded-3 p-3" style="box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
+  <div class="table-container">
+    <table class="table scrollable-table">
+      <thead class="table-primary">
+        <tr>
+          <th scope="col">Priority</th>
+          <th scope="col">Task</th>
+          <th scope="col">Progress</th>
+          <th scope="col">Tanggal</th>
+          <th scope="col">Deskripsi</th>
+          <th scope="col">Update</th>
+          <th scope="col">Done</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $delay = 0;
+        while ($baris = mysqli_fetch_assoc($hasil)) {
+          echo "<tr class='table-row'>";
+          echo "<td scope='row'>";
+          switch ($baris['priority']) {
+            case 3:
+              echo 'High';
+              break;
+            case 2:
+              echo 'Medium';
+              break;
+            case 1:
+              echo 'Low';
+              break;
+          }
+          echo "</td>";
 
-              echo "<td scope='row'>";
-              echo $baris['tugas'];
-              echo "</td>";
+          echo "<td scope='row'>";
+          echo $baris['tugas'];
+          echo "</td>";
 
-              echo "<td scope='row'>";
-              echo $baris['status'];
-              echo "</td>";
+          echo "<td scope='row' style='background-color: ";
+          switch ($baris['status']) {
+            case 'Done':
+              echo 'lightgreen;';
+              break;
+            case 'On Progress':
+              echo 'yellow;';
+              break;
+            case 'No Status':
+              echo 'lightcoral;';
+              break;
+            default:
+              echo 'transparent;'; 
+          }
+          echo "'>";
+          echo $baris['status'];
+          echo "</td>";
 
-              echo "<td scope='row'>";
-              echo $baris['tanggal'];
-              echo "</td>";
+          echo "<td scope='row'>";
+          echo $baris['tanggal'];
+          echo "</td>";
 
-              echo "<td scope='row'>";
-              echo $baris['deskripsi'];
-              echo "</td>";
+          echo "<td scope='row'>";
+          echo $baris['deskripsi'];
+          echo "</td>";
 
-              echo "<td>";
-              echo "<a href='update/start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
-              echo "<a href='update/edit.php?id=" . $baris['id'] . "&tugas=" . $baris['tugas'] . "&status=" . $baris['status'] . "&priority=" . $baris['priority'] . "' class='btn btn-warning'>Edit</a> ";
-              echo "<a href='update/delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
-              echo "</td>";
+          echo "<td>";
+          echo "<a href='update/start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
+          echo "<a href='update/edit.php?id=" . $baris['id'] . "&tugas=" . $baris['tugas'] . "&status=" . $baris['status'] . "&priority=" . $baris['priority'] . "' class='btn btn-warning'>Edit</a> ";
+          echo "<a href='update/delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
+          echo "</td>";
 
-              echo "<td>";
-              echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
-              echo "<input type='hidden' name='id' value='" . $baris['id'] . "'>";
-              echo "</td>";
-              echo "</tr>";
-              $delay += 200;
-            }
-            mysqli_free_result($hasil);
-            ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
+          echo "<td>";
+          echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
+          echo "<input type='hidden' name='id' value='" . $baris['id'] . "'>";
+          echo "</td>";
+          echo "</tr>";
+          $delay += 200;
+        }
+        mysqli_free_result($hasil);
+        ?>
+      </tbody>
+    </table>
+  </div>
+</div>
   </div>
           </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
