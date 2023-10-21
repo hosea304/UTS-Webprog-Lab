@@ -91,6 +91,7 @@ $hasil = mysqli_query($koneksi, $sql);
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Pacifico" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="script/style.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
 <body>
@@ -140,7 +141,7 @@ $hasil = mysqli_query($koneksi, $sql);
             <?php
             $delay = 0;
             while ($baris = mysqli_fetch_assoc($hasil)) {
-              echo "<tr class='table-row'>";
+              echo "<tr class='table-row' data-aos='fade-up' data-aos-anchor='.table-container'>";
               echo "<td scope='row'>";
               switch ($baris['priority']) {
                 case 3:
@@ -194,7 +195,11 @@ $hasil = mysqli_query($koneksi, $sql);
           </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="script/script.js"></script>
+  <script>
+  AOS.init();
+</script>
   <script>
     const deleteButtons = document.querySelectorAll('.delete');
     deleteButtons.forEach(button => {
