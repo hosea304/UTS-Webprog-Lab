@@ -6,6 +6,13 @@ if (mysqli_connect_errno()) {
     die("Koneksi database gagal: " . mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
 }
 
+// Retrieve user_id from the session
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+if ($user_id === null) {
+    die("User ID not found in the session.");
+}
+
 if (isset($_POST['submit'])) {
     $tugas = $_POST['listBaru'];
     $priority = $_POST['priority'];
@@ -35,9 +42,9 @@ if (isset($_POST['submit'])) {
     $deskripsi = mysqli_real_escape_string($koneksi, $deskripsi);
 
     // Using prepared statement to prevent SQL injection
-    $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, priority, tugas, tanggal, deskripsi, status) VALUES (?, ?, ?, ?, ?, 'No Status')");
-   
-    $stmt->bind_param("iisss", $user_id, $priority, $tugas, $tanggal, $deskripsi);
+    $stmt = $koneksi->prepare("INSERT INTO tbl_tugas (user_id, created_by_user_id, priority, tugas, tanggal, deskripsi, status) VALUES (?, ?, ?, ?, ?, ?, 'No Status')");
+
+    $stmt->bind_param("iiisss", $user_id, $user_id, $priority, $tugas, $tanggal, $deskripsi);
     $stmt->execute();
     $stmt->close();
 
@@ -50,9 +57,8 @@ if (isset($_POST['task_done'])) {
     $id = $_POST['id'];
     $isChecked = $_POST['task_done'] ? 1 : 0;
 
-    $status = $isChecked ? 'Done' : 'On Progress';
-
-    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id";
+    // Update only the tasks created by the current user
+    $sql = "UPDATE tbl_tugas SET status = '$status' WHERE id = $id AND created_by_user_id = $user_id";
     mysqli_query($koneksi, $sql);
 
     // Redirect after form submission
@@ -66,7 +72,7 @@ if ($user_id === null) {
     die("User ID not found in the session.");
 }
 
-$sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
+$sql = "SELECT * FROM tbl_tugas WHERE user_id = $user_id AND created_by_user_id = $user_id ORDER BY FIELD(status, 'On Progress', 'Done', 'No Status'), priority DESC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 
