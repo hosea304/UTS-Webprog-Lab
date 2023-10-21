@@ -114,7 +114,21 @@ $hasil = mysqli_query($koneksi, $sql);
         $delay = 0;
         while ($baris = mysqli_fetch_assoc($hasil)) {
           echo "<tr class='table-row'>";
-          echo "<td scope='row'>";
+          echo "<td scope='row' style='background-color: ";
+          switch ($baris['priority']) {
+            case 3:
+              echo 'yellow'; 
+              break;
+            case 2:
+              echo 'orange'; 
+              break;
+            case 1:
+              echo 'pink'; 
+              break;
+            default:
+              echo 'transparent'; 
+          }
+          echo "'>";
           switch ($baris['priority']) {
             case 3:
               echo 'High';
@@ -135,16 +149,16 @@ $hasil = mysqli_query($koneksi, $sql);
           echo "<td scope='row' style='background-color: ";
           switch ($baris['status']) {
             case 'Done':
-              echo 'lightgreen;';
+              echo 'lightgreen';
               break;
             case 'On Progress':
-              echo 'yellow;';
+              echo 'yellow';
               break;
             case 'No Status':
-              echo 'lightcoral;';
+              echo 'white';
               break;
             default:
-              echo 'transparent;';
+              echo 'transparent'; 
           }
           echo "'>";
           echo $baris['status'];
