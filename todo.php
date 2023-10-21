@@ -92,17 +92,24 @@ $hasil = mysqli_query($koneksi, $sql);
       <form action="todo.php" method='POST' class="mb-3">
       <div class="rounded-3 p-3" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
         <label>New To Do</label>
-        <input type="text" name="listBaru" id="listBaru" required>
+        <input type="text" name="listBaru" id="listBaru" required style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s; border-color: #ccc; box-shadow: none;"
+        onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
+        onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
         <label>Tanggal</label>
-        <input type="date" name="tanggal" id="tanggal" required>
+        <input type="date" name="tanggal" id="tanggal" required style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;">
         <label>Deskripsi</label>
-        <input type="text" name="deskripsi" id="deskripsi" required>
-        <select name="priority" id="option">
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        <input type="submit" value="Add" class="Add rounded-3" name="submit">
+        <input type="text" name="deskripsi" id="deskripsi" required style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s; border-color: #ccc; box-shadow: none;"
+        onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
+        onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
+        <select name="priority" id="option" style="border-radius: 5px;">
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <div class="text-center">
+  <input type="submit" value="Add" class="Add rounded-3" name="submit">
+</div>
+
       </form>
 </div>
       

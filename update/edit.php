@@ -55,21 +55,27 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
       <h1 class="mb-3">To-do list</h1>
       <form action="edit.php" method='POST' class="mb-3">
-      <div class="rounded-3 p-3" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
+      <div class="rounded-3 p-2" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
+      <div class="container text-center">
         <label>New To Do</label>
-        <input type="hidden" name="id" id="id" required>
-        <input type="text" name="tugas" id="tugas" required>
-        <select name="priority" id="priority">
+        <input type="hidden" name="id" id="id" required style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;"
+        onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
+        onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
+        <input type="text" name="tugas" id="tugas" required style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;"
+          onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
+          onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
+          <select name="priority" id="priority" style="border-radius: 5px;">
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
-        <select name="status" id="status">
+        <select name="status" id="status" style="border-radius: 5px;">
           <option value="No Status">No Status</option>
           <option value="On Progress">On Progress</option>
           <option value="Done">Done</option>
         </select>
         <input type="submit" value="Save" class="Add rounded-3" name="submit">
+</div>
       </form>
 </div>
 
