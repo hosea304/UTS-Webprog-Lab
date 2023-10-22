@@ -66,7 +66,7 @@ $hasil = mysqli_query($koneksi, $sql);
   <?php include('../navigation.php') ?>
   <div class="container-fluid">
     <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
-      <h1 class="mb-3">To-do list</h1>
+      <h1 class="mb-3">Update</h1>
       <form action="edit.php" method='POST' class="mb-3">
         <div class="rounded-3 p-1" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
           <div class="container text-center" style="margin-bottom: 20px">
