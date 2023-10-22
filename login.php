@@ -17,7 +17,6 @@
         }
 
         .custom-button:hover {
-            background-color: #4CAF50;
             transform: scale(1.02);
         }
 

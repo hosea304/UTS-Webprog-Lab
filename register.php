@@ -8,7 +8,6 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
         .custom-form-control {
-            /* Gaya umum untuk form control */
             border: 1px solid #ced4da;
             border-radius: 0.25rem;
             padding: 0.375rem 0.75rem;
@@ -30,7 +29,6 @@
         }
 
         .custom-button:hover {
-            background-color: #4CAF50;
             transform: scale(1.1);
         }
 
