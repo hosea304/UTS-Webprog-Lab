@@ -73,6 +73,7 @@
                 echo "<div class='alert alert-danger text-center mb-4 custom-alert'>Password salah</div>";
             }
             ?>
+            <a href="lupa.php" class="text-info">Lupa Password?</a>
             <button type="submit"
                 class="w-50 py-2 mx-auto mt-5 btn btn-primary rounded-3 custom-button fs-5">Login</button>
         </form>
