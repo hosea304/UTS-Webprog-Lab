@@ -67,16 +67,12 @@
       <label for="confirm_password" class="px-2 form-label">Konfirmasi Password Baru:</label><br>
       <input type="password" id="confirm_password" name="confirm_password"
         class="px-2 py-2 form-control custom-form-control"><br>
-      <input type="submit" value="Ubah Password"
-        class="w-50 py-2 mx-auto mt-5 btn btn-primary rounded-3 custom-button fs-5">
       <?php if (isset($_SESSION['error'])) {
-        echo "<p>" . $_SESSION['error'] . "</p>";
+        echo "<p class='bg-danger mx-2 text-center '>" . $_SESSION['error'] . "</p>";
         unset($_SESSION['error']);
-      }
-      if (isset($_SESSION['success'])) {
-        echo "<p>" . $_SESSION['success'] . "</p>";
-        unset($_SESSION['success']);
       } ?>
+      <input type="submit" value="Ubah Password"
+        class="w-50 py-2 mx-auto mt-3 btn btn-primary rounded-3 custom-button fs-5">
     </form>
   </div>
 </body>
