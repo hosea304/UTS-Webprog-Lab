@@ -4,66 +4,77 @@
 
 <head>
   <title>Lupa Password</title>
-  <!-- Add Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <!-- Add your custom styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <style>
-    body {
-      background-color: #f8f9fa;
-      padding: 20px;
+    .custom-form-control:hover,
+    .custom-form-control:focus {
+      border-color: #4CAF50;
     }
 
-    h2 {
-      color: #007bff;
+    .custom-button {
+      transition: transform 0.2s;
     }
 
-    form {
-      max-width: 400px;
-      margin: 0 auto;
+    .custom-button:hover {
+      background-color: #4CAF50;
+      transform: scale(1.02);
     }
 
-    .error-message {
-      color: #dc3545;
+    .custom-alert {
+      animation: fadeIn 0.5s;
     }
 
-    .success-message {
-      color: #28a745;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
   </style>
 </head>
 
-<body>
-  <div class="container">
-    <h2 class="mt-4">Lupa Password</h2>
-    <form action="proses/lupa_password.php" method="post">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" class="form-control" id="username" name="username">
+<body class="text-white justify-content-center" style="background-color: #C8E4B2;">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:white;">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item fs-4">
+            <a class="nav-link text-info " href="register.php">Register</a>
+          </li>
+          <li class="nav-item fs-4 me-3">
+            <a class="nav-link text-info" href="login.php">Login</a>
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label for="new_password">Password Baru:</label>
-        <input type="password" class="form-control" id="new_password" name="new_password">
-      </div>
-      <div class="form-group">
-        <label for="confirm_password">Konfirmasi Password Baru:</label>
-        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
-      </div>
-      <button type="submit" class="btn btn-primary">Ubah Password</button>
-
-      <?php if (isset($_SESSION['error'])): ?>
-        <p class="error-message"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
-      <?php endif; ?>
-
-      <?php if (isset($_SESSION['success'])): ?>
-        <p class="success-message"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></p>
-      <?php endif; ?>
+    </div>
+  </nav>
+  <h1 class="text-center my-5">Lupa Password</h1>
+  <div class="w-25 mx-auto">
+    <form action="proses/lupa_password.php" method="post" class="d-flex flex-column fs-5">
+      <label for="username" class="px-2 form-label">Username:</label><br>
+      <input type="text" id="username" name="username" class="px-2 py-2 form-control custom-form-control"><br>
+      <label for="new_password" class="px-2 form-label">Password Baru:</label><br>
+      <input type="password" id="new_password" name="new_password"
+        class="px-2 py-2 form-control custom-form-control"><br>
+      <label for="confirm_password" class="px-2 form-label">Konfirmasi Password Baru:</label><br>
+      <input type="password" id="confirm_password" name="confirm_password"
+        class="px-2 py-2 form-control custom-form-control"><br>
+      <?php if (isset($_SESSION['error'])) {
+        echo "<p class='bg-danger mx-2 text-center '>" . $_SESSION['error'] . "</p>";
+        unset($_SESSION['error']);
+      } ?>
+      <input type="submit" value="Ubah Password"
+        class="w-50 py-2 mx-auto mt-3 btn btn-primary rounded-3 custom-button fs-5">
     </form>
   </div>
-
-  <!-- Add Bootstrap JS and Popper.js -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
