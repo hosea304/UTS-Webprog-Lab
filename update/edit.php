@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
   $status = htmlspecialchars(mysqli_escape_string($koneksi, $status));
 
   $sqlEdit = "UPDATE tbl_tugas SET tugas = ?, priority = ?, status = ? WHERE id = ?  AND id_user_list = ?";
-  
+
   $stmt = $koneksi->prepare($sqlEdit);
   $stmt->bind_param("sisii", $tugas, $priority, $status, $id, $user_id);
   $stmt->execute();
@@ -68,129 +68,129 @@ $hasil = mysqli_query($koneksi, $sql);
     <div class='d-flex justify-content-center align-items-center w-100 h-100 flex-column'>
       <h1 class="mb-3">To-do list</h1>
       <form action="edit.php" method='POST' class="mb-3">
-       <div class="rounded-3 p-1" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
+        <div class="rounded-3 p-1" style=" box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
           <div class="container text-center" style="margin-bottom: 20px">
-          <div class="container text-center">
-            <label>New To Do</label>
-            <input type="hidden" name="id" id="id" required
-              style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;"
-              onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
-              onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
-            <input type="text" name="tugas" id="tugas" required
-              style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;"
-              onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
-              onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
-            <select name="priority" id="priority" style="border-radius: 5px;">
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
-            <select name="status" id="status" style="border-radius: 5px;">
-              <option value="No Status">No Status</option>
-              <option value="On Progress">On Progress</option>
-              <option value="Done">Done</option>
-            </select>
-            <input type="submit" value="Save" class="Add rounded-3" name="submit">
-          </div>
+            <div class="container text-center">
+              <label>New To Do</label>
+              <input type="hidden" name="id" id="id" required
+                style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;"
+                onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
+                onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
+              <input type="text" name="tugas" id="tugas" required
+                style="border: 1px solid #ccc; border-radius: 5px; padding: 3px; width: 20%; transition: border-color 0.3s, box-shadow 0.3s;"
+                onmouseover="this.style.borderColor = '#007bff'; this.style.boxShadow = '0 0 5px #007bff';"
+                onmouseout="this.style.borderColor = '#ccc'; this.style.boxShadow = 'none';">
+              <select name="priority" id="priority" style="border-radius: 5px;">
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+              <select name="status" id="status" style="border-radius: 5px;">
+                <option value="No Status">No Status</option>
+                <option value="On Progress">On Progress</option>
+                <option value="Done">Done</option>
+              </select>
+              <input type="submit" value="Save" class="Add rounded-3" name="submit">
+            </div>
       </form>
     </div>
-</div>
-<div class="rounded-3 p-3" style="box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
-  <div class="table-container">
-    <table class="table scrollable-table">
-      <thead class="table-primary">
-        <tr>
-          <th scope="col">Priority</th>
-          <th scope="col">Task</th>
-          <th scope="col">Progress</th>
-          <th scope="col">Tanggal</th>
-          <th scope="col">Deskripsi</th>
-          <th scope="col">Update</th>
-          <th scope="col">Done</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-        $delay = 0;
-        while ($baris = mysqli_fetch_assoc($hasil)) {
-          echo "<tr class='table-row'>";
-          echo "<td scope='row' style='background-color: ";
-          switch ($baris['priority']) {
-            case 3:
-              echo 'yellow'; 
-              break;
-            case 2:
-              echo 'orange'; 
-              break;
-            case 1:
-              echo 'pink'; 
-              break;
-            default:
-              echo 'transparent'; 
-          }
-          echo "'>";
-          switch ($baris['priority']) {
-            case 3:
-              echo 'High';
-              break;
-            case 2:
-              echo 'Medium';
-              break;
-            case 1:
-              echo 'Low';
-              break;
-          }
-          echo "</td>";
-
-          echo "<td scope='row'>";
-          echo $baris['tugas'];
-          echo "</td>";
-
-          echo "<td scope='row' style='background-color: ";
-          switch ($baris['status']) {
-            case 'Done':
-              echo 'lightgreen';
-              break;
-            case 'On Progress':
-              echo 'yellow';
-              break;
-            case 'No Status':
-              echo 'white';
-              break;
-            default:
-              echo 'transparent'; 
-          }
-          echo "'>";
-          echo $baris['status'];
-          echo "</td>";
-
-          echo "<td scope='row'>";
-          echo $baris['tanggal'];
-          echo "</td>";
-
-          echo "<td scope='row'>";
-          echo $baris['deskripsi'];
-          echo "</td>";
-
-          echo "<td>";
-          echo "<a href='start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
-          echo "<a href='delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
-          echo "</td>";
-
-          echo "<td>";
-          echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
-          echo "<input type='hidden' name='id' value='" . $baris['id'] . "'>";
-          echo "</td>";
-          echo "</tr>";
-          $delay += 200;
-        }
-        mysqli_free_result($hasil);
-        ?>
-      </tbody>
-    </table>
   </div>
-</div>
+  <div class="rounded-3 p-3" style="box-shadow: 5px 5px 5px #888888; background-color: #FFF2D8">
+    <div class="table-container">
+      <table class="table scrollable-table">
+        <thead class="table-primary">
+          <tr>
+            <th scope="col">Priority</th>
+            <th scope="col">Task</th>
+            <th scope="col">Progress</th>
+            <th scope="col">Tanggal</th>
+            <th scope="col">Deskripsi</th>
+            <th scope="col">Update</th>
+            <th scope="col">Done</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $delay = 0;
+          while ($baris = mysqli_fetch_assoc($hasil)) {
+            echo "<tr class='table-row'>";
+            echo "<td scope='row' style='background-color: ";
+            switch ($baris['priority']) {
+              case 3:
+                echo 'lightcoral';
+                break;
+              case 2:
+                echo 'orange';
+                break;
+              case 1:
+                echo 'yellow';
+                break;
+              default:
+                echo 'transparent';
+            }
+            echo "'>";
+            switch ($baris['priority']) {
+              case 3:
+                echo 'High';
+                break;
+              case 2:
+                echo 'Medium';
+                break;
+              case 1:
+                echo 'Low';
+                break;
+            }
+            echo "</td>";
+
+            echo "<td scope='row'>";
+            echo $baris['tugas'];
+            echo "</td>";
+
+            echo "<td scope='row' style='background-color: ";
+            switch ($baris['status']) {
+              case 'Done':
+                echo 'lightgreen';
+                break;
+              case 'On Progress':
+                echo 'yellow';
+                break;
+              case 'No Status':
+                echo 'white';
+                break;
+              default:
+                echo 'transparent';
+            }
+            echo "'>";
+            echo $baris['status'];
+            echo "</td>";
+
+            echo "<td scope='row'>";
+            echo $baris['tanggal'];
+            echo "</td>";
+
+            echo "<td scope='row'>";
+            echo $baris['deskripsi'];
+            echo "</td>";
+
+            echo "<td>";
+            echo "<a href='start.php?id=" . $baris['id'] . "' class='btn btn-primary'>Start</a> ";
+            echo "<a href='delete.php?id=" . $baris['id'] . "' class='btn btn-danger delete'>Delete</a> ";
+            echo "</td>";
+
+            echo "<td>";
+            echo "<input type='checkbox' name='task_done' onchange='this.form.submit()' " . ($baris['status'] == 'Done' ? 'checked' : '') . ($baris['status'] == 'No Status' ? 'disabled' : '') . ">";
+            echo "<input type='hidden' name='id' value='" . $baris['id'] . "'>";
+            echo "</td>";
+            echo "</tr>";
+            $delay += 200;
+          }
+          mysqli_free_result($hasil);
+          ?>
+        </tbody>
+      </table>
     </div>
+  </div>
+  </div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="../script/script.js"></script>
